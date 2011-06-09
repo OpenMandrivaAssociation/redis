@@ -28,7 +28,7 @@ different kind of sorting abilities.
 
 %package doc
 Summary:        HTML documentation for redis
-Group:          Productivity/Databases/Servers
+Group:          Databases
 Requires:       redis = %{version}
 
 %description doc

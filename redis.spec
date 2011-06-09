@@ -5,7 +5,7 @@ Name:           redis
 Version:        2.2.8
 Release:        %mkrel 1
 License:        BSD License
-Group:          Productivity/Databases/Servers
+Group:          Databases
 Summary:        Persistent key-value database
 Url:            http://redis.io/
 Source:         http://redis.googlecode.com/files/%{name}-%{version}.tar.gz

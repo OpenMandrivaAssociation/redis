@@ -1,0 +1,3 @@
+redis.logrotate
+redis.service
+redis.tmpfiles

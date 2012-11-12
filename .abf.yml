@@ -1,0 +1,4 @@
+sources:
+  "redis.logrotate:"	27d40b06f45c46d574cf1a5b590c2968acb30336
+  "redis.service:"	42b67c4062f02e4780e1ea4d141c7c758bd91ceb
+  "redis.tmpfiles:"	ab51170a36072d06a74d2caee89b44d86403e182

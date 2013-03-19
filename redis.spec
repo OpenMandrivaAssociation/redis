@@ -2,7 +2,7 @@
 # http://code.google.com/p/redis/issues/detail?id=202
 
 Name:             redis
-Version:          2.6.7
+Version:          2.6.9
 Release:          1
 Summary:          A persistent key-value database
 Group:            Databases
@@ -59,7 +59,6 @@ install -d -m 0755 %{buildroot}%{_localstatedir}/log/%{name}
 %_pre_useradd %{name}  %{_sharedstatedir}/%{name} /sbin/nologin
 
 %post
-%_tmpfilescreate %{name}
 %_post_service %{name}
 
 %preun

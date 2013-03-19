@@ -1,2 +1,4 @@
-sources:
+removed_sources:
   redis-2.6.7.tar.gz: fd7fcbec29956ec01710350b49653a2eda72fbd3
+sources:
+  redis-2.6.9.tar.gz: 519fc3d1e7a477217f1ace73252be622e0101001

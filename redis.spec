@@ -2,7 +2,7 @@
 # http://code.google.com/p/redis/issues/detail?id=202
 
 Name:             redis
-Version:          2.6.9
+Version:          2.6.13
 Release:          1
 Summary:          A persistent key-value database
 Group:            Databases
@@ -12,8 +12,6 @@ Source0:          http://redis.googlecode.com/files/%{name}-%{version}.tar.gz
 Source1:          %{name}.logrotate
 Source2:          %{name}.tmpfiles
 Source3:          %{name}.service
-# Update configuration for Fedora
-Patch0:           %{name}-2.6.5-redis.conf.patch
 BuildRequires:    tcl >= 8.5
 Requires(post):   rpm-helper >= 0.24.8-1
 Requires(preun):  rpm-helper >= 0.24.8-1
@@ -30,11 +28,11 @@ forth. Redis supports different kind of sorting abilities.
 
 %prep
 %setup -q
-%patch0 -p0
 
 %build
 for i in $(grep -rl 'tclsh8.5');do sed -i 's/tclsh8.5/tclsh8.6/g' $i;done
-%make
+export CFLAGS="%optflags"
+%make CC=%{__cc}
 
 %check
 tclsh tests/test_helper.tcl

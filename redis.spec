@@ -2,13 +2,13 @@
 # http://code.google.com/p/redis/issues/detail?id=202
 
 Name:             redis
-Version:          2.6.13
+Version:          2.6.15
 Release:          1
 Summary:          A persistent key-value database
 Group:            Databases
 License:          BSD
 URL:              http://redis.io/
-Source0:          http://redis.googlecode.com/files/%{name}-%{version}.tar.gz
+Source0:	  http://download.redis.io/releases/%{name}-%{version}.tar.gz
 Source1:          %{name}.logrotate
 Source2:          %{name}.tmpfiles
 Source3:          %{name}.service
@@ -57,6 +57,7 @@ install -d -m 0755 %{buildroot}%{_localstatedir}/log/%{name}
 %_pre_useradd %{name}  %{_sharedstatedir}/%{name} /sbin/nologin
 
 %post
+%tmpfiles_create %{name}
 %_post_service %{name}
 
 %preun

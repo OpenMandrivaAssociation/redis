@@ -2,17 +2,20 @@
 # http://code.google.com/p/redis/issues/detail?id=202
 
 Name:             redis
-Version:          2.6.16
+Version:          2.8.7
 Release:          1
 Summary:          A persistent key-value database
 Group:            Databases
 License:          BSD
 URL:              http://redis.io/
+Patch0:		  redis-2.8.3-config.patch
+Patch1:		  redis-2.8.3-shared.patch
 Source0:	  http://download.redis.io/releases/%{name}-%{version}.tar.gz
 Source1:          %{name}.logrotate
 Source2:          %{name}.tmpfiles
 Source3:          %{name}.service
 BuildRequires:    tcl >= 8.5
+BuildRequires:    jemalloc-devel
 Requires(post):   rpm-helper >= 0.24.8-1
 Requires(preun):  rpm-helper >= 0.24.8-1
 
@@ -28,11 +31,12 @@ forth. Redis supports different kind of sorting abilities.
 
 %prep
 %setup -q
+%apply_patches
+sed -i -e 's:AR=:AR?=:g' -e 's:RANLIB=:RANLIB?=:g' deps/lua/src/Makefile
+sed -i -e "s:-std=c99::g" deps/linenoise/Makefile deps/Makefile
 
 %build
-for i in $(grep -rl 'tclsh8.5');do sed -i 's/tclsh8.5/tclsh8.6/g' $i;done
-export CFLAGS="%optflags"
-%make CC=%{__cc}
+%make CC="%{__cc}" AR="%{__ar} rcu" JEMALLOC_SHARED=yes
 
 %check
 tclsh tests/test_helper.tcl

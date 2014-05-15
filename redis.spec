@@ -2,7 +2,7 @@
 # http://code.google.com/p/redis/issues/detail?id=202
 
 Name:             redis
-Version:          2.8.8
+Version:          2.8.9
 Release:          1
 Summary:          A persistent key-value database
 Group:            Databases

@@ -1,10 +1,2 @@
-removed_sources:
-  redis-2.6.13.tar.gz: 2ef8ea6a67465b6c5a5ea49241313d3dbc0de11b
-  redis-2.6.15.tar.gz: 037b116efb02a1d31c85f45a38d3a6cd637ba573
-  redis-2.6.16.tar.gz: f94c0f623aaa8c310f9be2a88e81716de01ce0ce
-  redis-2.6.7.tar.gz: fd7fcbec29956ec01710350b49653a2eda72fbd3
-  redis-2.6.9.tar.gz: 519fc3d1e7a477217f1ace73252be622e0101001
-  redis-2.8.7.tar.gz: acc369093ec74223e6da207921595187f7e64998
-  redis-2.8.8.tar.gz: aa811f399db58c92c8ec5e48271d307e9ab8eb81
 sources:
-  redis-2.8.9.tar.gz: 003ccdc175816e0a751919cf508f1318e54aac1e
+  redis-2.8.11.tar.gz: 3e3a4603781514f239f040287d3ef1097eb02a76

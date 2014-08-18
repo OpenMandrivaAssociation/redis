@@ -1,23 +1,23 @@
 # Check for status of man pages
 # http://code.google.com/p/redis/issues/detail?id=202
 
-Name:             redis
-Version:          2.8.11
-Release:          1
-Summary:          A persistent key-value database
-Group:            Databases
-License:          BSD
-URL:              http://redis.io/
-Patch0:		  redis-2.8.3-config.patch
-Patch1:		  redis-2.8.3-shared.patch
-Source0:	  http://download.redis.io/releases/%{name}-%{version}.tar.gz
-Source1:          %{name}.logrotate
-Source2:          %{name}.tmpfiles
-Source3:          %{name}.service
-BuildRequires:    tcl >= 8.5
-BuildRequires:    jemalloc-devel
-Requires(post):   rpm-helper >= 0.24.8-1
-Requires(preun):  rpm-helper >= 0.24.8-1
+Name:		redis
+Version:	2.8.13
+Release:	1
+Summary:	A persistent key-value database
+Group:		Databases
+License:	BSD
+URL:		http://redis.io/
+Patch0:		redis-2.8.3-config.patch
+Patch1:		redis-2.8.3-shared.patch
+Source0:	http://download.redis.io/releases/%{name}-%{version}.tar.gz
+Source1:	redis.logrotate
+Source2:	redis.tmpfiles
+Source3:	redis.service
+BuildRequires:	tcl >= 8.5
+BuildRequires:	jemalloc-devel
+Requires(pre):	rpm-helper >= 0.24.8-1
+Requires(postun):rpm-helper >= 0.24.8-1
 
 %description
 Redis is an advanced key-value store.
@@ -36,7 +36,7 @@ sed -i -e 's:AR=:AR?=:g' -e 's:RANLIB=:RANLIB?=:g' deps/lua/src/Makefile
 sed -i -e "s:-std=c99::g" deps/linenoise/Makefile deps/Makefile
 
 %build
-%make CC="%{__cc}" AR="%{__ar} rcu" JEMALLOC_SHARED=yes
+%make CC="%{__cc}" CFLAGS="%{optflags}" AR="%{__ar} rcu" JEMALLOC_SHARED=yes
 
 %check
 tclsh tests/test_helper.tcl
@@ -59,13 +59,6 @@ install -d -m 0755 %{buildroot}%{_localstatedir}/log/%{name}
 
 %pre
 %_pre_useradd %{name}  %{_sharedstatedir}/%{name} /sbin/nologin
-
-%post
-%tmpfiles_create %{name}
-%_post_service %{name}
-
-%preun
-%_preun_service %{name}
 
 %postun 
 %_postun_userdel %{name}

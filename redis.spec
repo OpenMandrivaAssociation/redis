@@ -8,7 +8,7 @@ Summary:	A persistent key-value database
 Group:		Databases
 License:	BSD
 URL:		http://redis.io/
-Patch0:		redis-2.8.3-config.patch
+Patch0:		redis-2.8.17-config.patch
 Patch1:		redis-2.8.3-shared.patch
 Source0:	http://download.redis.io/releases/%{name}-%{version}.tar.gz
 Source1:	redis.logrotate

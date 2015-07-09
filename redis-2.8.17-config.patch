@@ -1,6 +1,8 @@
---- a/redis.conf	2014-12-02 16:22:38.722433643 +0100
-+++ b/redis.conf	2014-12-02 16:22:16.252249350 +0100
-@@ -38,7 +38,7 @@
+diff --git a/redis.conf b/redis.conf
+index 2206f2d..04ca273 100644
+--- a/redis.conf
++++ b/redis.conf
+@@ -38,7 +38,7 @@ daemonize no
  
  # When running daemonized, Redis writes a pid file in /var/run/redis.pid by
  # default. You can specify a custom pid file location here.
@@ -9,7 +11,7 @@
  
  # Accept connections on the specified port, default is 6379.
  # If port 0 is specified Redis will not listen on a TCP socket.
-@@ -61,7 +61,7 @@
+@@ -61,7 +61,7 @@ tcp-backlog 511
  # Examples:
  #
  # bind 192.168.1.100 10.0.0.1
@@ -18,7 +20,7 @@
  
  # Specify the path for the Unix socket that will be used to listen for
  # incoming connections. There is no default, so Redis will not listen
-@@ -100,7 +100,7 @@
+@@ -100,7 +100,7 @@ loglevel notice
  # Specify the log file name. Also the empty string can be used to force
  # Redis to log on the standard output. Note that if you use standard
  # output for logging but daemonize, logs will be sent to /dev/null
@@ -27,16 +29,16 @@
  
  # To enable logging to the system logger, just set 'syslog-enabled' to yes,
  # and optionally update the other syslog parameters to suit your needs.
-@@ -184,7 +184,7 @@
+@@ -184,7 +184,7 @@ dbfilename dump.rdb
  # The Append Only File will also be created inside this directory.
- # 
+ #
  # Note that you must specify a directory here, not a file name.
 -dir ./
 +dir /var/lib/redis/
  
  ################################# REPLICATION #################################
  
-@@ -403,6 +403,7 @@
+@@ -446,6 +446,7 @@ slave-priority 100
  # output buffers (but this is not needed if the policy is 'noeviction').
  #
  # maxmemory <bytes>

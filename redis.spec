@@ -41,9 +41,6 @@ cp deps/lua/src/{fpconv,lua_bit,lua_cjson,lua_cmsgpack,lua_struct,strbuf}.c src/
 cp deps/lua/src/{fpconv,strbuf}.h src/
 
 %build
-mkdir -p bfd
-ln -s %{_bindir}/ld.bfd bfd/ld
-export PATH=$PWD/bfd:$PATH
 %make CC="%{__cc}" CFLAGS="%{optflags}" AR="%{__ar} rcu" JEMALLOC_SHARED=yes
 
 %check

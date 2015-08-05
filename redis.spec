@@ -2,7 +2,7 @@
 # http://code.google.com/p/redis/issues/detail?id=202
 
 Name:		redis
-Version:	3.0.2
+Version:	3.0.3
 Release:	1
 Summary:	A persistent key-value database
 Group:		Databases
@@ -10,12 +10,14 @@ License:	BSD
 URL:		http://redis.io/
 Patch0:		redis-2.8.17-config.patch
 Patch1:		redis-2.8.3-shared.patch
+Patch2:		redis-3.0.0-sharedlua.patch
 Source0:	http://download.redis.io/releases/%{name}-%{version}.tar.gz
 Source1:	redis.logrotate
 Source2:	redis.tmpfiles
 Source3:	redis.service
 BuildRequires:	tcl >= 8.5
 BuildRequires:	jemalloc-devel
+BuildRequires:	lua-devel-static
 Requires(pre):	rpm-helper >= 0.24.8-1
 Requires(postun):rpm-helper >= 0.24.8-1
 
@@ -35,7 +37,13 @@ forth. Redis supports different kind of sorting abilities.
 sed -i -e 's:AR=:AR?=:g' -e 's:RANLIB=:RANLIB?=:g' deps/lua/src/Makefile
 sed -i -e "s:-std=c99::g" deps/linenoise/Makefile deps/Makefile
 
+cp deps/lua/src/{fpconv,lua_bit,lua_cjson,lua_cmsgpack,lua_struct,strbuf}.c src/
+cp deps/lua/src/{fpconv,strbuf}.h src/
+
 %build
+mkdir -p bfd
+ln -s %{_bindir}/ld.bfd bfd/ld
+export PATH=$PWD/bfd:$PATH
 %make CC="%{__cc}" CFLAGS="%{optflags}" AR="%{__ar} rcu" JEMALLOC_SHARED=yes
 
 %check

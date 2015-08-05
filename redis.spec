@@ -15,9 +15,8 @@ Source0:	http://download.redis.io/releases/%{name}-%{version}.tar.gz
 Source1:	redis.logrotate
 Source2:	redis.tmpfiles
 Source3:	redis.service
-BuildRequires:	tcl >= 8.5
 BuildRequires:	jemalloc-devel
-BuildRequires:	lua-devel-static
+BuildRequires:	lua5.1-devel
 Requires(pre):	rpm-helper >= 0.24.8-1
 Requires(postun):rpm-helper >= 0.24.8-1
 
@@ -40,11 +39,21 @@ sed -i -e "s:-std=c99::g" deps/linenoise/Makefile deps/Makefile
 cp deps/lua/src/{fpconv,lua_bit,lua_cjson,lua_cmsgpack,lua_struct,strbuf}.c src/
 cp deps/lua/src/{fpconv,strbuf}.h src/
 
-%build
-%make CC="%{__cc}" CFLAGS="%{optflags}" AR="%{__ar} rcu" JEMALLOC_SHARED=yes
+# No hidden build.
+sed -i -e 's|\t@|\t|g' deps/lua/src/Makefile
+sed -i -e 's|$(QUIET_CC)||g' src/Makefile
+sed -i -e 's|$(QUIET_LINK)||g' src/Makefile
+sed -i -e 's|$(QUIET_INSTALL)||g' src/Makefile
+# Ensure deps are built with proper flags
+sed -i -e 's|$(CFLAGS)|%{optflags}|g' deps/Makefile
+sed -i -e 's|OPTIMIZATION?=-O3|OPTIMIZATION=%{optflags}|g' deps/hiredis/Makefile
+sed -i -e 's|$(LDFLAGS)|%{?__global_ldflags}|g' deps/hiredis/Makefile
+sed -i -e 's|$(CFLAGS)|%{optflags}|g' deps/linenoise/Makefile
+sed -i -e 's|$(LDFLAGS)|%{?__global_ldflags}|g' deps/linenoise/Makefile
 
-%check
-tclsh tests/test_helper.tcl
+
+%build
+%make CC="%{__cc}" CFLAGS="%{optflags}" LDFLAGS="%{ldflags}" AR="%{__ar} rcu" JEMALLOC_SHARED=yes
 
 %install
 # Install binaries

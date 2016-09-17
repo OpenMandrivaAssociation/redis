@@ -1,22 +1,29 @@
-# Check for status of man pages
-# http://code.google.com/p/redis/issues/detail?id=202
-
 Name:		redis
-Version:	3.0.3
+Version:	3.2.3
 Release:	1
 Summary:	A persistent key-value database
 Group:		Databases
 License:	BSD
 URL:		http://redis.io/
-Patch0:		redis-2.8.17-config.patch
-Patch1:		redis-2.8.3-shared.patch
-Patch2:		redis-3.0.0-sharedlua.patch
+Patch0:		http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/0001-redis-3.2.3-redis-conf.patch
+Patch1:		http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/0002-redis-3.2.3-deps-library-fPIC-performance-tuning.patch
+Patch2:		http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/0003-redis-2.8.18-use-system-jemalloc.patch
+Patch3:		http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/0004-redis-2.8.18-disable-test-failed-on-slow-machine.patch
+Patch4:		http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/0005-redis-2.8.18-sentinel-configuration-file-fix.patch
 Source0:	http://download.redis.io/releases/%{name}-%{version}.tar.gz
-Source1:	redis.logrotate
-Source2:	redis.tmpfiles
-Source3:	redis.service
+Source1:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis-limit-systemd
+Source2:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis-sentinel.service
+Source3:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis-shutdown
+Source4:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis.logrotate
+Source5:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis.service
+Source6:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis.tmpfiles
 BuildRequires:	jemalloc-devel
-BuildRequires:	lua5.1-devel
+BuildRequires:	pkgconfig(lua)
+BuildRequires:	procps-ng
+BuildRequires:	systemd
+BuildRequires:	tcl
+Requires:	/bin/awk
+Requires:	logrotate
 Requires(pre):	rpm-helper >= 0.24.8-1
 Requires(postun):rpm-helper >= 0.24.8-1
 
@@ -33,11 +40,8 @@ forth. Redis supports different kind of sorting abilities.
 %prep
 %setup -q
 %apply_patches
-sed -i -e 's:AR=:AR?=:g' -e 's:RANLIB=:RANLIB?=:g' deps/lua/src/Makefile
-sed -i -e "s:-std=c99::g" deps/linenoise/Makefile deps/Makefile
 
-cp deps/lua/src/{fpconv,lua_bit,lua_cjson,lua_cmsgpack,lua_struct,strbuf}.c src/
-cp deps/lua/src/{fpconv,strbuf}.h src/
+rm -rf deps/jemalloc
 
 # No hidden build.
 sed -i -e 's|\t@|\t|g' deps/lua/src/Makefile
@@ -53,23 +57,46 @@ sed -i -e 's|$(LDFLAGS)|%{?__global_ldflags}|g' deps/linenoise/Makefile
 
 
 %build
-%make CC="%{__cc}" CFLAGS="%{optflags}" LDFLAGS="%{ldflags}" AR="%{__ar} rcu" JEMALLOC_SHARED=yes
+%make \
+	DEBUG="" \
+	LDFLAGS="%{ldflags}" \
+	CFLAGS+="%{optflags}" \
+	LUA_LDFLAGS+="%{ldflags}" \
+	MALLOC=jemalloc \
+	all
 
 %install
-# Install binaries
-install -p -D -m 0755 src/%{name}-benchmark %{buildroot}%{_bindir}/%{name}-benchmark
-install -p -D -m 0755 src/%{name}-cli %{buildroot}%{_bindir}/%{name}-cli
-install -p -D -m 0755 src/%{name}-check-aof %{buildroot}%{_bindir}/%{name}-check-aof
-install -p -D -m 0755 src/%{name}-check-dump %{buildroot}%{_bindir}/%{name}-check-dump
-install -p -D -m 0755 src/%{name}-server %{buildroot}%{_sbindir}/%{name}-server
-# Install misc other
-install -p -D -m 0644 %{name}.conf %{buildroot}%{_sysconfdir}/%{name}.conf
-install -p -D -m 0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
-install -p -D -m 0755 %{SOURCE2} %{buildroot}%{_tmpfilesdir}/%{name}.conf
-install -p -D -m 0644 %{SOURCE3} %{buildroot}%{_unitdir}/%{name}.service
+%make install INSTALL="install -p" PREFIX=%{buildroot}%{_prefix}
 
-install -d -m 0755 %{buildroot}%{_localstatedir}/lib/%{name}
-install -d -m 0755 %{buildroot}%{_localstatedir}/log/%{name}
+# Filesystem
+mkdir -p %{buildroot}%{_sharedstatedir}/%{name} \
+	%{buildroot}%{_localstatedir}/log/%{name} \
+	%{buildroot}%{_localstatedir}/run/%{name}
+
+# Extras
+install -pDm 755 %{S:3} %{buildroot}%{_bindir}/%{name}-shutdown
+
+# Logrotate file
+install -pDm 644 %{S:4} %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
+
+# Configuration files
+install -pDm 644 redis.conf %{buildroot}%{_sysconfdir}/redis.conf
+install -pDm 644 sentinel.conf %{buildroot}%{_sysconfdir}/redis-sentinel.conf
+
+# Systemd unit files
+install -pDm 644 %{S:2} %{buildroot}%{_unitdir}/redis-sentinel.service
+install -pDm 644 %{S:5} %{buildroot}%{_unitdir}/redis.service
+
+# tmpfiles setup
+install -pDm 644 %{S:6} %{buildroot}%{_tmpfilesdir}/%{name}.conf
+
+# Systemd limits
+install -pDm 644 %{S:1} %{buildroot}%{_sysconfdir}/systemd/system/%{name}.service.d/limit.conf
+install -pDm 644 %{S:1} %{buildroot}%{_sysconfdir}/systemd/system/%{name}-sentinel.service.d/limit.conf
+
+%check
+# Currently says all tests passed and then segfaults
+#make test
 
 %pre
 %_pre_useradd %{name}  %{_sharedstatedir}/%{name} /sbin/nologin
@@ -78,12 +105,17 @@ install -d -m 0755 %{buildroot}%{_localstatedir}/log/%{name}
 %_postun_userdel %{name}
 
 %files
-%doc 00-RELEASENOTES BUGS COPYING README
+%doc 00-RELEASENOTES BUGS COPYING
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %config(noreplace) %{_sysconfdir}/%{name}.conf
+%config(noreplace) %{_sysconfdir}/%{name}-sentinel.conf
 %dir %attr(0755, redis, root) %{_localstatedir}/lib/%{name}
 %dir %attr(0755, redis, root) %{_localstatedir}/log/%{name}
 %{_bindir}/%{name}-*
-%{_sbindir}/%{name}-*
 %{_tmpfilesdir}/%{name}.conf
 %{_unitdir}/%{name}.service
+%{_unitdir}/%{name}-sentinel.service
+%dir %{_sysconfdir}/systemd/system/%{name}.service.d
+%{_sysconfdir}/systemd/system/%{name}.service.d/limit.conf
+%dir %{_sysconfdir}/systemd/system/%{name}-sentinel.service.d
+%{_sysconfdir}/systemd/system/%{name}-sentinel.service.d/limit.conf

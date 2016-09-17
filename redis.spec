@@ -1,6 +1,6 @@
 Name:		redis
 Version:	3.2.3
-Release:	1
+Release:	2
 Summary:	A persistent key-value database
 Group:		Databases
 License:	BSD
@@ -10,12 +10,14 @@ Patch1:		http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/0002-redis-3.2.
 Patch2:		http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/0003-redis-2.8.18-use-system-jemalloc.patch
 Patch3:		http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/0004-redis-2.8.18-disable-test-failed-on-slow-machine.patch
 Patch4:		http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/0005-redis-2.8.18-sentinel-configuration-file-fix.patch
+Patch5:		redis-3.2.3-openmandriva-config.patch
 Source0:	http://download.redis.io/releases/%{name}-%{version}.tar.gz
 Source1:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis-limit-systemd
 Source2:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis-sentinel.service
 Source3:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis-shutdown
 Source4:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis.logrotate
-Source5:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis.service
+# Based on, but not identical to, Fedora's file
+Source5:	redis.service
 Source6:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis.tmpfiles
 BuildRequires:	jemalloc-devel
 BuildRequires:	pkgconfig(lua)

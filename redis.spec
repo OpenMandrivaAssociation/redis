@@ -5,12 +5,9 @@ Summary:	A persistent key-value database
 Group:		Databases
 License:	BSD
 URL:		http://redis.io/
-Patch0:		http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/0001-redis-3.2.3-redis-conf.patch
-Patch1:		http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/0002-redis-3.2.3-deps-library-fPIC-performance-tuning.patch
-Patch2:		http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/0003-redis-2.8.18-use-system-jemalloc.patch
-Patch3:		http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/0004-redis-2.8.18-disable-test-failed-on-slow-machine.patch
-Patch4:		http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/0005-redis-2.8.18-sentinel-configuration-file-fix.patch
-Patch5:		redis-3.2.3-openmandriva-config.patch
+Patch0:		http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/0001-1st-man-pageis-for-redis-cli-redis-benchmark-redis-c.patch
+Patch1:		http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/0002-install-redis-check-rdb-as-a-symlink-instead-of-dupl.patch
+Patch5:		redis-4.0.5-openmandriva-redis.conf.patch
 Source0:	http://download.redis.io/releases/%{name}-%{version}.tar.gz
 Source1:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis-limit-systemd
 Source2:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis-sentinel.service
@@ -19,7 +16,6 @@ Source4:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis.logrotate
 # Based on, but not identical to, Fedora's file
 Source5:	redis.service
 Source6:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis.tmpfiles
-BuildRequires:	jemalloc-devel
 BuildRequires:	pkgconfig(lua)
 BuildRequires:	procps-ng
 BuildRequires:	systemd
@@ -64,7 +60,7 @@ sed -i -e 's|$(LDFLAGS)|%{?__global_ldflags}|g' deps/linenoise/Makefile
 	LDFLAGS="%{ldflags}" \
 	CFLAGS+="%{optflags}" \
 	LUA_LDFLAGS+="%{ldflags}" \
-	MALLOC=jemalloc \
+	MALLOC=libc \
 	all
 
 %install

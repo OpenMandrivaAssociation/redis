@@ -1,5 +1,5 @@
 Name:		redis
-Version:	4.0.7
+Version:	4.0.8
 Release:	1
 Summary:	A persistent key-value database
 Group:		Databases
@@ -7,6 +7,7 @@ License:	BSD
 URL:		http://redis.io/
 Patch0:		http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/0001-1st-man-pageis-for-redis-cli-redis-benchmark-redis-c.patch
 Patch1:		http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/0002-install-redis-check-rdb-as-a-symlink-instead-of-dupl.patch
+Patch2:		redis-4.0.8-workaround-make-deadlock.patch
 Patch5:		redis-4.0.5-openmandriva-redis.conf.patch
 Source0:	http://download.redis.io/releases/%{name}-%{version}.tar.gz
 Source1:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis-limit-systemd

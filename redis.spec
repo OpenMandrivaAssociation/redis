@@ -57,6 +57,16 @@ sed -i -e 's|$(LDFLAGS)|%{?__global_ldflags}|g' deps/linenoise/Makefile
 
 
 %build
+%ifarch %{ix86}
+# Workaround for a crash while building with
+# clang 7.0.0-0.333395
+export CC=gcc
+export CXX=g++
+export LD=gcc
+echo 'CC=gcc' >temp
+cat src/Makefile >>temp
+mv -f temp src/Makefile
+%endif
 %make \
 	DEBUG="" \
 	LDFLAGS="%{ldflags}" \

@@ -1,6 +1,6 @@
 Name:		redis
 Version:	4.0.10
-Release:	1
+Release:	2
 Summary:	A persistent key-value database
 Group:		Databases
 License:	BSD
@@ -23,6 +23,7 @@ BuildRequires:	systemd
 BuildRequires:	tcl
 Requires:	/bin/awk
 Requires:	logrotate
+BuildRequires:	rpm-helper
 Requires(pre):	rpm-helper >= 0.24.8-1
 Requires(postun):rpm-helper >= 0.24.8-1
 

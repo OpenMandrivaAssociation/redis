@@ -1,6 +1,6 @@
 Name:		redis
 Version:	5.0.0
-Release:	1
+Release:	2
 Summary:	A persistent key-value database
 Group:		Databases
 License:	BSD

@@ -1,5 +1,5 @@
 Name:		redis
-Version:	5.0.5
+Version:	5.0.6
 Release:	1
 Summary:	A persistent key-value database
 Group:		Databases

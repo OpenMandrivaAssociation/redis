@@ -39,7 +39,7 @@ forth. Redis supports different kind of sorting abilities.
 
 %prep
 %setup -q
-%apply_patches
+%autopatch -p1
 
 rm -rf deps/jemalloc
 

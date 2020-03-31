@@ -1,6 +1,8 @@
+%define beta rc3
+
 Name:		redis
-Version:	5.0.8
-Release:	1
+Version:	6.0
+Release:	%{?beta:0.%{beta}.}1
 Summary:	A persistent key-value database
 Group:		Databases
 License:	BSD
@@ -9,7 +11,7 @@ Patch0:		http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/0001-1st-man-pa
 Patch1:		http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/0002-install-redis-check-rdb-as-a-symlink-instead-of-dupl.patch
 Patch2:		redis-4.0.8-workaround-make-deadlock.patch
 Patch5:		redis-4.0.5-openmandriva-redis.conf.patch
-Source0:	http://download.redis.io/releases/%{name}-%{version}.tar.gz
+Source0:	http://download.redis.io/releases/%{name}-%{version}%{?beta:-%{beta}}.tar.gz
 Source1:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis-limit-systemd
 Source2:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis-sentinel.service
 Source3:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis-shutdown
@@ -38,8 +40,7 @@ union, intersection, difference between sets, and so
 forth. Redis supports different kind of sorting abilities.
 
 %prep
-%setup -q
-%autopatch -p1
+%autosetup -p1 -n %{name}-%{version}%{?beta:-%{beta}}
 
 rm -rf deps/jemalloc
 

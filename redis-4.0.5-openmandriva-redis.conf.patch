@@ -1,6 +1,7 @@
---- redis-4.0.5/redis.conf.omv~	2017-12-03 21:33:15.772332019 +0100
-+++ redis-4.0.5/redis.conf	2017-12-03 21:38:01.296075940 +0100
-@@ -155,7 +155,7 @@ supervised no
+diff -up redis-6.0-rc3/redis.conf.4~ redis-6.0-rc3/redis.conf
+--- redis-6.0-rc3/redis.conf.4~	2020-03-31 17:56:04.000000000 +0200
++++ redis-6.0-rc3/redis.conf	2020-04-01 01:35:46.782153947 +0200
+@@ -224,7 +224,7 @@ supervised no
  #
  # Creating a pid file is best effort: if Redis is not able to create it
  # nothing bad happens, the server will start and run normally.
@@ -9,7 +10,7 @@
  
  # Specify the server verbosity level.
  # This can be one of:
-@@ -168,7 +168,7 @@ loglevel notice
+@@ -237,7 +237,7 @@ loglevel notice
  # Specify the log file name. Also the empty string can be used to force
  # Redis to log on the standard output. Note that if you use standard
  # output for logging but daemonize, logs will be sent to /dev/null
@@ -18,7 +19,7 @@
  
  # To enable logging to the system logger, just set 'syslog-enabled' to yes,
  # and optionally update the other syslog parameters to suit your needs.
-@@ -260,7 +260,7 @@ dbfilename dump.rdb
+@@ -342,7 +342,7 @@ rdb-del-sync-files no
  # The Append Only File will also be created inside this directory.
  #
  # Note that you must specify a directory here, not a file name.
@@ -27,11 +28,11 @@
  
  ################################# REPLICATION #################################
  
-@@ -557,6 +557,7 @@ slave-priority 100
+@@ -821,6 +821,7 @@ replica-priority 100
  # output buffers (but this is not needed if the policy is 'noeviction').
  #
  # maxmemory <bytes>
 +maxmemory 256m
  
  # MAXMEMORY POLICY: how Redis will select what to remove when maxmemory
- # is reached. You can select among five behaviors:
+ # is reached. You can select one from the following behaviors:

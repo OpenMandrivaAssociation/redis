@@ -23,6 +23,7 @@ BuildRequires:	pkgconfig(lua)
 BuildRequires:	procps-ng
 BuildRequires:	systemd
 BuildRequires:	tcl
+BuildRequires:	atomic-devel
 Requires:	/bin/awk
 Requires:	logrotate
 BuildRequires:	rpm-helper

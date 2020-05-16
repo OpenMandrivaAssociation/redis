@@ -1,7 +1,7 @@
 #define beta rc3
 
 Name:		redis
-Version:	6.0.1
+Version:	6.0.3
 Release:	%{?beta:0.%{beta}.1}1
 Summary:	A persistent key-value database
 Group:		Databases

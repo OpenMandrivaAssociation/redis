@@ -1,6 +1,7 @@
---- redis-4.0.8/deps/Makefile.omv~	2018-02-06 18:32:27.706799033 +0100
-+++ redis-4.0.8/deps/Makefile	2018-02-06 18:32:57.390912727 +0100
-@@ -33,10 +33,6 @@ ifneq ($(shell sh -c '[ -f .make-ldflags
+diff -up redis-6.2-rc1/deps/Makefile.3~ redis-6.2-rc1/deps/Makefile
+--- redis-6.2-rc1/deps/Makefile.3~	2020-12-15 18:24:16.793734710 +0100
++++ redis-6.2-rc1/deps/Makefile	2020-12-15 18:24:51.760172577 +0100
+@@ -33,11 +33,6 @@ ifneq ($(shell sh -c '[ -f .make-ldflags
  endif
  
  distclean:
@@ -8,6 +9,7 @@
 -	-(cd linenoise && $(MAKE) clean) > /dev/null || true
 -	-(cd lua && $(MAKE) clean) > /dev/null || true
 -	-(cd jemalloc && [ -f Makefile ] && $(MAKE) distclean) > /dev/null || true
+-	-(cd hdr_histogram && $(MAKE) clean) > /dev/null || true
  	-(rm -f .make-*)
  
  .PHONY: distclean

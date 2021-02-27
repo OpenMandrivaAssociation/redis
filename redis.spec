@@ -1,14 +1,13 @@
-%define beta rc1
+#define beta rc1
 
 Name:		redis
-Version:	6.2
+Version:	6.2.0
 Release:	1
 Summary:	A persistent key-value database
 Group:		Databases
 License:	BSD
 URL:		http://redis.io/
 Patch0:		http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/0001-1st-man-pageis-for-redis-cli-redis-benchmark-redis-c.patch
-Patch1:		http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/0002-install-redis-check-rdb-as-a-symlink-instead-of-dupl.patch
 Patch2:		redis-4.0.8-workaround-make-deadlock.patch
 Patch5:		redis-4.0.5-openmandriva-redis.conf.patch
 Source0:	http://download.redis.io/releases/%{name}-%{version}%{?beta:-%{beta}}.tar.gz

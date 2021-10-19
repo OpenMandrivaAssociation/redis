@@ -2,7 +2,7 @@
 
 Name:		redis
 Version:	6.2.6
-Release:	1
+Release:	2
 Summary:	A persistent key-value database
 Group:		Databases
 License:	BSD
@@ -18,16 +18,17 @@ Source4:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis.logrotate
 # Based on, but not identical to, Fedora's file
 Source5:	redis.service
 Source6:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis.tmpfiles
+Source7:	redis.sysusers
 BuildRequires:	pkgconfig(lua)
 BuildRequires:	procps-ng
-BuildRequires:	systemd
+BuildRequires:	systemd-rpm-macros
+BuildRequires:	pkgconfig(libsystemd)
 BuildRequires:	tcl
 BuildRequires:	atomic-devel
 Requires:	/bin/awk
 Requires:	logrotate
-BuildRequires:	rpm-helper
-Requires(pre):	rpm-helper >= 0.24.8-1
-Requires(postun):rpm-helper >= 0.24.8-1
+Requires(pre):	systemd
+%systemd_requires
 
 %description
 Redis is an advanced key-value store.
@@ -52,10 +53,9 @@ sed -i -e 's|$(QUIET_INSTALL)||g' src/Makefile
 # Ensure deps are built with proper flags
 sed -i -e 's|$(CFLAGS)|%{optflags}|g' deps/Makefile
 sed -i -e 's|OPTIMIZATION?=-O3|OPTIMIZATION=%{optflags}|g' deps/hiredis/Makefile
-sed -i -e 's|$(LDFLAGS)|%{?__global_ldflags}|g' deps/hiredis/Makefile
+sed -i -e 's|$(LDFLAGS)|%{build_ldflags}|g' deps/hiredis/Makefile
 sed -i -e 's|$(CFLAGS)|%{optflags}|g' deps/linenoise/Makefile
-sed -i -e 's|$(LDFLAGS)|%{?__global_ldflags}|g' deps/linenoise/Makefile
-
+sed -i -e 's|$(LDFLAGS)|%{build_ldflags}|g' deps/linenoise/Makefile
 
 %build
 %ifarch %{ix86}
@@ -68,11 +68,11 @@ echo 'CC=gcc' >temp
 cat src/Makefile >>temp
 mv -f temp src/Makefile
 %endif
-%make \
+%make_build \
 	DEBUG="" \
-	LDFLAGS="%{ldflags}" \
+	LDFLAGS="%{build_ldflags}" \
 	CFLAGS+="%{optflags}" \
-	LUA_LDFLAGS+="%{ldflags}" \
+	LUA_LDFLAGS+="%{build_ldflags}" \
 	MALLOC=libc \
 	all
 
@@ -105,15 +105,14 @@ install -pDm 644 %{S:6} %{buildroot}%{_tmpfilesdir}/%{name}.conf
 install -pDm 644 %{S:1} %{buildroot}%{_sysconfdir}/systemd/system/%{name}.service.d/limit.conf
 install -pDm 644 %{S:1} %{buildroot}%{_sysconfdir}/systemd/system/%{name}-sentinel.service.d/limit.conf
 
+install -Dpm 644 %{SOURCE7} %{buildroot}%{_sysusersdir}/%{name}.conf
+
 %check
 # Currently says all tests passed and then segfaults
 #make test
 
 %pre
-%_pre_useradd %{name}  %{_sharedstatedir}/%{name} /sbin/nologin
-
-%postun 
-%_postun_userdel %{name}
+%sysusers_create_package %{name} %{SOURCE7}
 
 %files
 %doc 00-RELEASENOTES BUGS COPYING
@@ -123,6 +122,7 @@ install -pDm 644 %{S:1} %{buildroot}%{_sysconfdir}/systemd/system/%{name}-sentin
 %dir %attr(0755, redis, root) %{_localstatedir}/lib/%{name}
 %dir %attr(0755, redis, root) %{_localstatedir}/log/%{name}
 %{_bindir}/%{name}-*
+%{_sysusersdir}/%{name}.conf
 %{_tmpfilesdir}/%{name}.conf
 %{_unitdir}/%{name}.service
 %{_unitdir}/%{name}-sentinel.service

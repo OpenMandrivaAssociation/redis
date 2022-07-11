@@ -68,10 +68,17 @@ echo 'CC=gcc' >temp
 cat src/Makefile >>temp
 mv -f temp src/Makefile
 %endif
+# ifarch below intentionally says x86_64 and not %{x86_64},
+# znver1 is not affected by the problem it works around
+# (build time error caused by _Float32 at -Os)
 %make_build \
 	DEBUG="" \
 	LDFLAGS="%{build_ldflags}" \
+%ifarch x86_64
+	CFLAGS+="%{optflags} -O2" \
+%else
 	CFLAGS+="%{optflags}" \
+%endif
 	LUA_LDFLAGS+="%{build_ldflags}" \
 	MALLOC=libc \
 	all

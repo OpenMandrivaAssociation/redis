@@ -2,7 +2,7 @@
 
 Name:		redis
 Version:	7.0.10
-Release:	1
+Release:	2
 Summary:	A persistent key-value database
 Group:		Databases
 License:	BSD

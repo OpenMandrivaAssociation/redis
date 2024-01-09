@@ -1,7 +1,7 @@
 #define beta rc1
 
 Name:		redis
-Version:	7.2.2
+Version:	7.2.4
 Release:	1
 Summary:	A persistent key-value database
 Group:		Databases
@@ -84,12 +84,13 @@ mv -f temp src/Makefile
 	all
 
 %install
-%make install INSTALL="install -p" PREFIX=%{buildroot}%{_prefix}
+%make_install INSTALL="install -p" PREFIX=%{buildroot}%{_prefix}
 
 # Filesystem
 mkdir -p %{buildroot}%{_sharedstatedir}/%{name} \
 	%{buildroot}%{_localstatedir}/log/%{name} \
-	%{buildroot}%{_localstatedir}/run/%{name}
+	%{buildroot}%{_localstatedir}/run/%{name} \
+	%{buildroot}%{_localstatedir}/lib/%{name}
 
 # Extras
 install -pDm 755 %{S:3} %{buildroot}%{_bindir}/%{name}-shutdown
@@ -114,12 +115,9 @@ install -pDm 644 %{S:1} %{buildroot}%{_sysconfdir}/systemd/system/%{name}-sentin
 
 install -Dpm 644 %{SOURCE7} %{buildroot}%{_sysusersdir}/%{name}.conf
 
-%check
+#check
 # Currently says all tests passed and then segfaults
 #make test
-
-%pre
-%sysusers_create_package %{name} %{SOURCE7}
 
 %files
 %doc 00-RELEASENOTES BUGS COPYING

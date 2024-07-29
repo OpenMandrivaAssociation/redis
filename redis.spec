@@ -1,7 +1,7 @@
 #define beta rc1
 
 Name:		redis
-Version:	7.2.5
+Version:	7.4.0
 Release:	1
 Summary:	A persistent key-value database
 Group:		Databases
@@ -120,7 +120,7 @@ install -Dpm 644 %{SOURCE7} %{buildroot}%{_sysusersdir}/%{name}.conf
 #make test
 
 %files
-%doc 00-RELEASENOTES BUGS COPYING
+%doc 00-RELEASENOTES BUGS
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %config(noreplace) %{_sysconfdir}/%{name}.conf
 %config(noreplace) %{_sysconfdir}/%{name}-sentinel.conf

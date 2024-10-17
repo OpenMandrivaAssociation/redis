@@ -6,7 +6,7 @@ Release:	1
 Summary:	A persistent key-value database
 Group:		Databases
 License:	BSD
-URL:		http://redis.io/
+URL:		https://redis.io/
 Patch0:		http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/0001-1st-man-pageis-for-redis-cli-redis-benchmark-redis-c.patch
 Patch2:		redis-4.0.8-workaround-make-deadlock.patch
 Patch5:		redis-4.0.5-openmandriva-redis.conf.patch

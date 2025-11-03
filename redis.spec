@@ -1,7 +1,7 @@
 #define beta rc1
 
 Name:		redis
-Version:	7.4.3
+Version:	8.2.3
 Release:	1
 Summary:	A persistent key-value database
 Group:		Databases

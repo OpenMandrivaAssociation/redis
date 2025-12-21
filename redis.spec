@@ -19,6 +19,7 @@ Source4:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis.logrotate
 Source5:	redis.service
 Source6:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis.tmpfiles
 Source7:	redis.sysusers
+BuildRequires:	make
 BuildRequires:	pkgconfig(lua)
 BuildRequires:	procps-ng
 BuildRequires:	systemd-rpm-macros

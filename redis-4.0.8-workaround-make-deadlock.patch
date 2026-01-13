@@ -1,7 +1,7 @@
-diff -up redis-8.2.3/deps/Makefile.2~ redis-8.2.3/deps/Makefile
---- redis-8.2.3/deps/Makefile.2~	2025-11-02 14:43:53.000000000 +0100
-+++ redis-8.2.3/deps/Makefile	2025-11-03 02:28:10.571792923 +0100
-@@ -53,13 +53,6 @@ ifneq ($(shell sh -c '[ -f .make-ldflags
+diff -up redis-8.4.0/deps/Makefile.2~ redis-8.4.0/deps/Makefile
+--- redis-8.4.0/deps/Makefile.2~	2025-11-18 15:58:24.000000000 +0100
++++ redis-8.4.0/deps/Makefile	2026-01-13 15:28:22.346363824 +0100
+@@ -53,14 +53,6 @@ ifneq ($(shell sh -c '[ -f .make-ldflags
  endif
  
  distclean:
@@ -12,6 +12,7 @@ diff -up redis-8.2.3/deps/Makefile.2~ redis-8.2.3/deps/Makefile
 -	-(cd hdr_histogram && $(MAKE) clean) > /dev/null || true
 -	-(cd fpconv && $(MAKE) clean) > /dev/null || true
 -	-(cd fast_float && $(MAKE) clean) > /dev/null || true
+-	-(cd xxhash && $(MAKE) clean) > /dev/null || true
  	-(rm -f .make-*)
  
  .PHONY: distclean

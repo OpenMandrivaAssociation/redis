@@ -1,7 +1,7 @@
 #define beta rc1
 
 Name:		redis
-Version:	8.4.0
+Version:	8.4.1
 Release:	1
 Summary:	A persistent key-value database
 Group:		Databases
@@ -60,16 +60,6 @@ sed -i -e 's|$(CFLAGS)|%{optflags}|g' deps/linenoise/Makefile
 sed -i -e 's|$(LDFLAGS)|%{build_ldflags}|g' deps/linenoise/Makefile
 
 %build
-%ifarch %{ix86}
-# Workaround for a crash while building with
-# clang 7.0.0-0.333395
-export CC=gcc
-export CXX=g++
-export LD=gcc
-echo 'CC=gcc' >temp
-cat src/Makefile >>temp
-mv -f temp src/Makefile
-%endif
 # ifarch below intentionally says x86_64 and not %{x86_64},
 # znver1 is not affected by the problem it works around
 # (build time error caused by _Float32 at -Os)

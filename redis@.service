@@ -1,0 +1,49 @@
+[Unit]
+Description=A persistent key-value database, instance %i
+Documentation=https://redis.io/documentation
+# This template unit assumes your redis-server configuration file(s)
+# to live at /etc/redis/<INSTANCE_NAME>.conf
+AssertPathExists=/etc/redis/%i.conf
+After=network.target
+
+[Service]
+Type=notify
+PIDFile=/run/redis/%i.pid
+ExecStartPre=-/usr/bin/mkdir -p /srv/redis/%i
+ExecStartPre=-/usr/bin/chown redis:root /srv/redis/%i
+ExecStart=/usr/bin/redis-server /etc/redis/%i.conf --daemonize no --supervised systemd
+KillMode=mixed
+KillSignal=SIGTERM
+TimeoutStopSec=60
+Restart=always
+User=redis
+Group=redis
+RuntimeDirectory=redis
+RuntimeDirectoryMode=0755
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/srv/redis/%i
+WorkingDirectory=/srv/redis/%i
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+NoNewPrivileges=true
+RestrictSUIDSGID=true
+# Redis only needs to bind to localhost and Unix sockets
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+SystemCallFilter=@system-service
+SystemCallArchitectures=native
+LockPersonality=true
+RestrictRealtime=true
+RestrictNamespaces=true
+# Capabilities - redis runs as unprivileged user, needs almost nothing
+CapabilityBoundingSet=
+
+[Install]
+WantedBy=multi-user.target
+

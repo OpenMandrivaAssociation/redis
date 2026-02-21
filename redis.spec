@@ -2,7 +2,7 @@
 
 Name:		redis
 Version:	8.6.0
-Release:	1
+Release:	2
 Summary:	A persistent key-value database
 Group:		Databases
 License:	BSD
@@ -16,8 +16,7 @@ Source1:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis-limit-sys
 Source2:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis-sentinel.service
 Source3:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis-shutdown
 Source4:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis.logrotate
-# Based on, but not identical to, Fedora's file
-Source5:	redis.service
+Source5:	redis@.service
 Source6:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis.tmpfiles
 Source7:	redis.sysusers
 BuildRequires:	make
@@ -41,6 +40,23 @@ All this data types can be manipulated with atomic operations
 to push/pop elements, add/remove elements, perform server side
 union, intersection, difference between sets, and so
 forth. Redis supports different kind of sorting abilities.
+
+%package sentinel
+Summary:	Tool for monitoring multiple redis instances and handling failover
+Group:		Servers
+# Only because %{_bindir}/redis-sentinel is a symlink to %{_bindir}/redis-server
+# They should actually be on separate hosts if possible
+Requires:	%{name} = %{EVRD}
+
+%description sentinel
+Tool for monitoring multiple redis instances and handling failover
+
+%package benchmark
+Summary:	Tool for measuring the performance of redis
+Group:		Servers
+
+%description benchmark
+Tool for measuring the performance of redis
 
 %prep
 %autosetup -p1 -n %{name}-%{version}%{?beta:-%{beta}}
@@ -91,12 +107,12 @@ install -pDm 755 %{S:3} %{buildroot}%{_bindir}/%{name}-shutdown
 install -pDm 644 %{S:4} %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
 
 # Configuration files
-install -pDm 644 redis.conf %{buildroot}%{_sysconfdir}/redis.conf
-install -pDm 644 sentinel.conf %{buildroot}%{_sysconfdir}/redis-sentinel.conf
+install -pDm 644 redis.conf %{buildroot}%{_sysconfdir}/redis/example.conf
+install -pDm 644 sentinel.conf %{buildroot}%{_sysconfdir}/redis/redis-sentinel.conf
 
 # Systemd unit files
 install -pDm 644 %{S:2} %{buildroot}%{_unitdir}/redis-sentinel.service
-install -pDm 644 %{S:5} %{buildroot}%{_unitdir}/redis.service
+install -pDm 644 %{S:5} %{buildroot}%{_unitdir}/redis@.service
 
 # tmpfiles setup
 install -pDm 644 %{S:6} %{buildroot}%{_tmpfilesdir}/%{name}.conf
@@ -105,25 +121,46 @@ install -pDm 644 %{S:6} %{buildroot}%{_tmpfilesdir}/%{name}.conf
 install -pDm 644 %{S:1} %{buildroot}%{_sysconfdir}/systemd/system/%{name}.service.d/limit.conf
 install -pDm 644 %{S:1} %{buildroot}%{_sysconfdir}/systemd/system/%{name}-sentinel.service.d/limit.conf
 
-install -Dpm 644 %{SOURCE7} %{buildroot}%{_sysusersdir}/%{name}.conf
+install -Dpm 644 %{S:7} %{buildroot}%{_sysusersdir}/%{name}.conf
+
+mkdir -p %{buildroot}/srv/%{name}
+
+# We don't need this anymore -- systemd handles shutdown
+rm %{buildroot}%{_bindir}/redis-shutdown
 
 #check
-# Currently says all tests passed and then segfaults
-#make test
+# The test suite needs exactly tcl 8.5 -- won't work with 9.x
+# make test
+
+# /var/lib/redis moved to /srv/redis 2026-02-21 after 6.0, 8.6.0-2
+%pretrans -p <lua>
+omv = require("omv")
+omv.dir2Symlink("/var/lib/redis", "/srv/redis")
 
 %files
 %doc 00-RELEASENOTES BUGS
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
-%config(noreplace) %{_sysconfdir}/%{name}.conf
-%config(noreplace) %{_sysconfdir}/%{name}-sentinel.conf
-%dir %attr(0755, redis, root) %{_localstatedir}/lib/%{name}
+%dir %{_sysconfdir}/redis
+%{_sysconfdir}/redis/example.conf
+%ghost %{_localstatedir}/lib/%{name}
+%dir %attr(0755, redis, root) /srv/%{name}
 %dir %attr(0755, redis, root) %{_localstatedir}/log/%{name}
-%{_bindir}/%{name}-*
+%{_bindir}/%{name}-cli
+%{_bindir}/%{name}-server
+%{_bindir}/%{name}-check-aof
+%{_bindir}/%{name}-check-rdb
 %{_sysusersdir}/%{name}.conf
 %{_tmpfilesdir}/%{name}.conf
-%{_unitdir}/%{name}.service
-%{_unitdir}/%{name}-sentinel.service
+%{_unitdir}/%{name}@.service
 %dir %{_sysconfdir}/systemd/system/%{name}.service.d
 %{_sysconfdir}/systemd/system/%{name}.service.d/limit.conf
+
+%files benchmark
+%{_bindir}/%{name}-benchmark
+
+%files sentinel
+%{_bindir}/%{name}-sentinel
+%{_unitdir}/%{name}-sentinel.service
+%config(noreplace) %{_sysconfdir}/redis/%{name}-sentinel.conf
 %dir %{_sysconfdir}/systemd/system/%{name}-sentinel.service.d
 %{_sysconfdir}/systemd/system/%{name}-sentinel.service.d/limit.conf

@@ -4,13 +4,12 @@ Documentation=https://redis.io/documentation
 # This template unit assumes your redis-server configuration file(s)
 # to live at /etc/redis/<INSTANCE_NAME>.conf
 AssertPathExists=/etc/redis/%i.conf
-After=network.target
+Requires=redis-prepare@%i.service
+After=network.target redis-prepare@%i.service
 
 [Service]
 Type=notify
 PIDFile=/run/redis/%i.pid
-ExecStartPre=-/usr/bin/mkdir -p /srv/redis/%i
-ExecStartPre=-/usr/bin/chown redis:root /srv/redis/%i
 ExecStart=/usr/bin/redis-server /etc/redis/%i.conf --daemonize no --supervised systemd
 KillMode=mixed
 KillSignal=SIGTERM
@@ -18,7 +17,7 @@ TimeoutStopSec=60
 Restart=always
 User=redis
 Group=redis
-RuntimeDirectory=redis
+RuntimeDirectory=redis/%i
 RuntimeDirectoryMode=0755
 ProtectSystem=strict
 ProtectHome=true

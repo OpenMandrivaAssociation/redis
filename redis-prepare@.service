@@ -1,0 +1,9 @@
+[Unit]
+Description=Prepare a Redis instance for %i
+Before=redis@%i.service
+
+[Service]
+Type=oneshot
+ExecStart=-/bin/mkdir -p /srv/redis/%i /run/redis/%i
+ExecStart=-/bin/chown redis:root /srv/redis/%i /run/redis/%i
+ExecStart=-/bin/chmod 0755 /srv/redis/%i /run/redis/%i

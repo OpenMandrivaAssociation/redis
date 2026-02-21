@@ -2,7 +2,7 @@
 
 Name:		redis
 Version:	8.6.0
-Release:	2
+Release:	3
 Summary:	A persistent key-value database
 Group:		Databases
 License:	BSD
@@ -17,8 +17,9 @@ Source2:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis-sentinel.
 Source3:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis-shutdown
 Source4:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis.logrotate
 Source5:	redis@.service
-Source6:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis.tmpfiles
-Source7:	redis.sysusers
+Source6:	redis-prepare@.service
+Source7:	http://pkgs.fedoraproject.org/cgit/rpms/redis.git/plain/redis.tmpfiles
+Source8:	redis.sysusers
 BuildRequires:	make
 BuildRequires:	pkgconfig(lua)
 BuildRequires:	procps-ng
@@ -113,15 +114,16 @@ install -pDm 644 sentinel.conf %{buildroot}%{_sysconfdir}/redis/redis-sentinel.c
 # Systemd unit files
 install -pDm 644 %{S:2} %{buildroot}%{_unitdir}/redis-sentinel.service
 install -pDm 644 %{S:5} %{buildroot}%{_unitdir}/redis@.service
+install -pDm 644 %{S:6} %{buildroot}%{_unitdir}/redis-prepare@.service
 
 # tmpfiles setup
-install -pDm 644 %{S:6} %{buildroot}%{_tmpfilesdir}/%{name}.conf
+install -pDm 644 %{S:7} %{buildroot}%{_tmpfilesdir}/%{name}.conf
 
 # Systemd limits
 install -pDm 644 %{S:1} %{buildroot}%{_sysconfdir}/systemd/system/%{name}.service.d/limit.conf
 install -pDm 644 %{S:1} %{buildroot}%{_sysconfdir}/systemd/system/%{name}-sentinel.service.d/limit.conf
 
-install -Dpm 644 %{S:7} %{buildroot}%{_sysusersdir}/%{name}.conf
+install -Dpm 644 %{S:8} %{buildroot}%{_sysusersdir}/%{name}.conf
 
 mkdir -p %{buildroot}/srv/%{name}
 
@@ -152,6 +154,7 @@ omv.dir2Symlink("/var/lib/redis", "/srv/redis")
 %{_sysusersdir}/%{name}.conf
 %{_tmpfilesdir}/%{name}.conf
 %{_unitdir}/%{name}@.service
+%{_unitdir}/%{name}-prepare@.service
 %dir %{_sysconfdir}/systemd/system/%{name}.service.d
 %{_sysconfdir}/systemd/system/%{name}.service.d/limit.conf
 

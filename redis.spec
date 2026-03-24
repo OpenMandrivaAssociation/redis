@@ -1,8 +1,8 @@
 #define beta rc1
 
 Name:		redis
-Version:	8.6.0
-Release:	3
+Version:	8.6.2
+Release:	1
 Summary:	A persistent key-value database
 Group:		Databases
 License:	BSD

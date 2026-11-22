@@ -1,7 +1,7 @@
 #define beta rc1
 
 Name:		redis
-Version:	8.10.3
+Version:	8.12.0
 Release:	1
 Summary:	A persistent key-value database
 Group:		Databases
@@ -98,7 +98,9 @@ sed -i -e 's|$(LDFLAGS)|%{build_ldflags}|g' deps/linenoise/Makefile
 	all
 
 %install
-%make_install INSTALL="install -p" PREFIX=%{buildroot}%{_prefix}
+# Top-level `make install` is deploy: it builds every cloned Stack module
+# (Rust) and rewrites redis.conf. Those modules are not shipped.
+%make_install -C src INSTALL="install -p" PREFIX=%{buildroot}%{_prefix}
 
 # Filesystem
 mkdir -p %{buildroot}%{_sharedstatedir}/%{name} \
